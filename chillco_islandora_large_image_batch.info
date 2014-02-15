@@ -1,0 +1,7 @@
+name = "Chillco Islandora Large Image Batch"
+description = "Batch process singular large images"
+core = 7.x
+package = Chillco
+dependencies[] = islandora_batch
+dependencies[] = chillco_dpldams_xmlparser
+files[] = includes/chillco_islandora_large_image_batch.inc
