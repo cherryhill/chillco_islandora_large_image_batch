@@ -60,22 +60,19 @@ class ChillcoIslandoraLargeImageBatch extends IslandoraScanBatch {
       $target,
       '.xml'
     );
-
-    $image_types = array(
-      '.tif',
+    $replacements = array(
+      $target_images,
       '.jpg',
     );
+
     $images = file_scan_directory($target_images, $this->get_pattern());
     foreach (file_scan_directory($target, $this->get_pattern()) as $uri => $value) {
-      foreach ($image_types as $image_type) {
-        $replacements = array($target_images, $image_type);
-        if (strpos($uri, '.xml') !== FALSE) {
-          // Only process xml if there is a matching image to go with it.
-          $matching_image = str_replace($patterns, $replacements, $value->uri);
-          if (!empty($images[$matching_image])) {
-            $files[substr($uri, $target_length)] = $value;
-            $files[substr($matching_image, $target_length)] = $images[$matching_image];
-          }
+      if (strpos($uri, '.xml') !== FALSE) {
+        // Only process xml if there is a matching image to go with it.
+        $matching_image = str_replace($patterns, $replacements, $value->uri);
+        if (!empty($images[$matching_image])) {
+          $files[substr($uri, $target_length)] = $value;
+          $files[substr($matching_image, $target_length)] = $images[$matching_image];
         }
       }
     }
