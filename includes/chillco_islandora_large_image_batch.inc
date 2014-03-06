@@ -131,7 +131,7 @@ class ChillcoIslandoraLargeImageBatchObject extends IslandoraScanBatchObject {
       $datastream = 'OBJ';
       $datatype = 'tif';
     }
-    if (!empty($this->object_info['jpg'])) {
+    else if (!empty($this->object_info['jpg'])) {
       $datastream = 'IMAGE';
       $datatype = 'jpg';
     }
