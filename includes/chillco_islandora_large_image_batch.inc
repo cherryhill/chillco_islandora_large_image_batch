@@ -60,19 +60,22 @@ class ChillcoIslandoraLargeImageBatch extends IslandoraScanBatch {
       $target,
       '.xml'
     );
-    $replacements = array(
-      $target_images,
-      '.jpg',
+    $datatypes = array(
+      '.tif',
+      '.jpg'
     );
 
     $images = file_scan_directory($target_images, $this->get_pattern());
     foreach (file_scan_directory($target, $this->get_pattern()) as $uri => $value) {
       if (strpos($uri, '.xml') !== FALSE) {
-        // Only process xml if there is a matching image to go with it.
-        $matching_image = str_replace($patterns, $replacements, $value->uri);
-        if (!empty($images[$matching_image])) {
-          $files[substr($uri, $target_length)] = $value;
-          $files[substr($matching_image, $target_length)] = $images[$matching_image];
+        foreach ($datatypes as $datatype) {
+          $replacements = array($target_images, $datatype);
+          // Only process xml if there is a matching image to go with it.
+          $matching_image = str_replace($patterns, $replacements, $value->uri);
+          if (!empty($images[$matching_image])) {
+            $files[substr($uri, $target_length)] = $value;
+            $files[substr($matching_image, $target_length)] = $images[$matching_image];
+          }
         }
       }
     }
@@ -122,10 +125,20 @@ class ChillcoIslandoraLargeImageBatchObject extends IslandoraScanBatchObject {
     $this->label = $this->get_title();
     $this->get_mods();
     $this->get_dc();
+    
+    $datastream = $datatype = NULL;
+    if (!empty($this->object_info['tif'])) {
+      $datastream = 'OBJ';
+      $datatype = 'tif';
+    }
+    if (!empty($this->object_info['jpg'])) {
+      $datastream = 'IMAGE';
+      $datatype = 'jpg';
+    }
 
-    if (!isset($this['IMAGE']) && !empty($this->object_info['jpg'])) {
-        $image = $this->object_info['jpg'];
-        $image_datastream = $this->constructDatastream('IMAGE');
+    if (!isset($this[$datastream]) && !empty($this->object_info[$datatype])) {
+        $image = $this->object_info[$datatype];
+        $image_datastream = $this->constructDatastream($datastream);
         // Figure out the mimetype.
         $image_datastream->mimetype = static::get_mime($image);
         $image_datastream->label = check_plain($image->filename);
