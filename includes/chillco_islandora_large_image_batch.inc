@@ -62,7 +62,7 @@ class ChillcoIslandoraLargeImageBatch extends IslandoraScanBatch {
     );
     $datatypes = array(
       '.tif',
-      '.jpg'
+      '.jpg',
     );
 
     $images = file_scan_directory($target_images, $this->get_pattern());
